@@ -1,0 +1,212 @@
+<html>
+<head>
+  <title>Quant-ummm SUPERposition</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      font-family: Garamond;
+      overflow: hidden;
+    }
+
+	s{
+		font-size:4px;
+	}
+    
+	.top-container {
+      background-color: yellow;
+      text-align: center;
+      padding: 20px 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .top-container .title-label {
+      font-size: 40px;
+      font-weight: bold;
+      color: purple;
+    }
+
+    .top-container .target-symbol {
+      font-size: 50px;
+      font-weight: bold;
+      color: purple;
+      background-color: yellow;
+      padding: 0 10px;
+      margin-top: 10px;
+      display: inline-block;
+    }
+
+    .scoreboard {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      color: white;
+      font-size: 20px;
+      background-color: rgba(50,50,50,0.7);
+      padding: 10px 15px;
+      border-radius: 8px;
+      z-index: 2;
+    }
+
+    .info-button {
+      position: fixed;  
+      top: 10px;
+      left: 10px;
+      font-size: 18px;
+      padding: 5px 10px;
+      background-color: yellow;  
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 5;  
+	  font-family: Garamond;
+	  font-weight: bold;
+    }
+
+    .info-text {
+      position: fixed;
+      top: 50px;
+      left: 10px;
+      color: white;
+      background-color: rgba(50,50,50,0.8);
+      padding: 10px;
+      border-radius: 8px;
+      max-width: 300px;
+      display: none;
+      z-index: 5;
+    }
+
+    .button-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 50px);
+      grid-template-rows: repeat(auto-fill, 50px);
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    .quant-button {
+      width: 50px;
+      height: 50px;
+      background-color: black;
+      border: 2px solid transparent;
+      cursor: pointer;
+      color: transparent;  
+      font-size: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .quant-button:hover {
+      border: 2px solid white;
+      box-shadow: 0 0 8px white;
+    }
+	
+	
+  </style>
+</head>
+<body>
+
+  <button class="info-button" id="infoBtnLeft">ℹ️ Info</button>
+
+  <div class="info-text" id="infoText">
+    <u>Welcome to Quantum Hunting!</u>   
+    <br><br>
+	Following Schrödinger's thought process - until you click a button, its symbol exists in a hidden state, potentially any of the possible symbols. 
+	Yet, when you click it, the button reveals its symbol - only one at a time, never multiple symbols simultaneously.
+    <br><br>
+
+    Click the invisible buttons to reveal their symbols. Your goal is to find the symbol matching the one displayed above.  
+    Hover over buttons to see their outline. 
+	Try to reveal all the buttons.
+    <br>
+
+	If you'd like to increase the difficulty level, just zoom out.
+    <br><br>
+
+	Good Luck!
+	
+  </div>
+
+  <div class="top-container">
+    <div class="title-label">QUANTUM<s>computing</s>HUNTING</div>
+    <div class="target-symbol" id="top">?</div>
+  </div>
+
+  <div class="scoreboard" id="scoreboard">Score: 0</div>
+  <div class="button-container" id="buttonContainer"></div>
+
+  <script>
+    const arr = ['⚛️','💻','⚪','⚫','🟣','🔀','🌐','🎲'];
+    const describe = ['Quantum Physics','Quantum Computing','|0>','|1>','Qubit','Superposition','Quantum Networking','Probabilistic Measurement'];
+
+    const buttonContainer = document.getElementById('buttonContainer');
+    const title = document.getElementById('top');
+    const scoreboard = document.getElementById('scoreboard');
+    const infoBtnLeft = document.getElementById('infoBtnLeft');
+    const infoText = document.getElementById('infoText');
+
+    let score = 0;
+
+    infoBtnLeft.addEventListener('click', () => {
+      infoText.style.display = infoText.style.display === 'block' ? 'none' : 'block';
+    });
+
+    function generateTarget() {
+      const index = Math.floor(Math.random() * arr.length);
+      return {emoji: arr[index], description: describe[index]};
+    }
+
+    let currentTarget = generateTarget();
+
+    function updateTitle() {
+      title.textContent = `${currentTarget.emoji} : ${currentTarget.description}`;
+    }
+
+    updateTitle();
+
+    const btnSize = 50;
+    const cols = Math.ceil(window.innerWidth / btnSize);
+    const rows = Math.ceil(window.innerHeight / btnSize);
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const btn = document.createElement('button');
+        btn.classList.add('quant-button');
+
+        const randIndex = Math.floor(Math.random() * arr.length);
+        const emoji = arr[randIndex];
+        btn.dataset.symbol = emoji;
+        btn.textContent = emoji; // hidden via CSS
+
+        btn.addEventListener('click', function() {
+          btn.style.color = 'white';
+
+          if (btn.dataset.symbol === currentTarget.emoji) {
+            alert("Congrats! You found the right symbol!");
+            score++;
+          } else {
+            alert("Failed! Try again.");
+          }
+
+          scoreboard.textContent = "Score: " + score;
+          currentTarget = generateTarget();
+          updateTitle();
+        });
+
+        buttonContainer.appendChild(btn);
+      }
+    }
+
+    window.addEventListener('resize', () => location.reload());
+  </script>
+
+</body>
+</html>
